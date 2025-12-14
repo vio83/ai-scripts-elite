@@ -1,0 +1,29 @@
+╔══════════════════════════════════════════════════════════════════════════╗
+║           SYSTEM MONITOR - MAC AIR 2020 (8GB RAM)                       ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+┌─ CPU Usage
+│ ██████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░  13%
+└─ Load (1/5/15 min): 7.43 4.37 3.179
+
+┌─ RAM Usage (8GB Total)
+│ ██████████████████████████████░░░░░░░░░░░░░░░░░░░░  61%
+├─ Used: 0.9G | Cached: 0.3G | Free: 0.0G
+└─ Memory Pressure: Moderate
+
+┌─ Disk Usage
+│ ███████████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░  31%
+└─ Space: 11Gi / 228Gi
+
+┌─ Top Memory Consumers
+│ com.apple.WebKit.WebContent                  2.3%
+│ com.apple.dock.extra                         1.8%
+│ Safari                                       1.4%
+└─
+
+┌─ System Info
+│ Uptime: 1d 5h 55m  │  Processes: 464
+│ Date: 2025-12-14 07:16:04
+└─ Press Ctrl+C to exit  │  Update: every 2 seconds
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
