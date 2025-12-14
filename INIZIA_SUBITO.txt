@@ -1,0 +1,53 @@
+╔════════════════════════════════════════════════════════════╗
+║  ⚡ AVVIO IMMEDIATO - FAI ADESSO (2 minuti)              ║
+╚════════════════════════════════════════════════════════════╝
+
+🎯 PASSO 1: SUL MAC - COPIA QUESTI COMANDI NEL TERMINAL
+
+cd ~/Desktop
+git clone https://github.com/vio83/ai-scripts-elite.git
+cd ai-scripts-elite
+./AVVIO_RAPIDO.sh
+
+╔════════════════════════════════════════════════════════════╗
+║  ⏰ Aspetta 30 secondi... apparirà un IP tipo:           ║
+║     http://192.168.1.100:5000                            ║
+║  📝 ANNOTALO o fai screenshot!                           ║
+╚════════════════════════════════════════════════════════════╝
+
+🎯 PASSO 2: SU IPHONE - APRI SAFARI
+
+1. Safari → barra indirizzo
+2. Scrivi: http://192.168.1.100:5000
+   (usa IL TUO IP dal passo 1!)
+3. Vedrai la dashboard! ✅
+
+🎯 PASSO 3: AGGIUNGI A HOME (10 secondi)
+
+1. Premi bottone Condividi (quadrato con freccia ↑)
+2. Scorri → "Aggiungi a Home"
+3. Nome: "VIO Monitor"
+4. Aggiungi
+
+✅ FATTO! Ora hai l'icona sulla home iPhone!
+
+═══════════════════════════════════════════════════════════
+
+📱 IMPORTANTE: iPhone e Mac stessa WiFi!
+   (Controlla che entrambi siano sulla STESSA rete WiFi)
+
+═══════════════════════════════════════════════════════════
+
+🎨 PER VEDERE GRAFICA ELITE SUL MAC (dopo):
+
+Terminal → cd ~/Desktop/ai-scripts-elite
+python3 mac_system_monitor_elite.py
+
+(Ctrl+C per uscire)
+
+═══════════════════════════════════════════════════════════
+
+⚡ NO CAVO USB NECESSARIO! Solo WiFi!
+🚗 Poi puoi partire! Il Mac resta attivo con dashboard!
+
+═══════════════════════════════════════════════════════════
