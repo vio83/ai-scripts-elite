@@ -15,6 +15,17 @@ This repository includes **TWO complete versions** to choose from:
 
 See [VERSION_COMPARISON.md](VERSION_COMPARISON.md) and [SIDE_BY_SIDE_COMPARISON.md](SIDE_BY_SIDE_COMPARISON.md) for detailed comparisons.
 
+### 📱 NEW: iPhone Access & Email Notifications
+
+**Access your Mac monitor from your iPhone 15!**
+
+- 📧 **Email Notifications** - Receive status updates like GitHub notifications
+- 🌐 **Web Dashboard** - Touch-friendly interface accessible from iPhone Safari
+- 🔄 **Real-time Sync** - Monitor your Mac remotely, even when away from home
+- 📱 **iOS Optimized** - Perfect for iPhone 15 with iOS Tahoe 2026/26.1
+
+**See [IPHONE_GUIDE.md](IPHONE_GUIDE.md) for complete setup instructions!**
+
 ### 🌟 Features
 
 - **Real-time System Monitoring**
@@ -91,11 +102,35 @@ python3 mac_system_monitor.py
 python3 mac_system_monitor_elite.py
 ```
 
+#### 📱 Web Dashboard for iPhone
+
+```bash
+# Start the web dashboard
+python3 web_dashboard.py
+
+# Then on iPhone, open Safari and go to:
+# http://YOUR_MAC_IP:5000
+```
+
+#### 📧 Email Notifications
+
+```bash
+# Configure email notifications
+python3 email_notifier.py
+
+# Edit the config file with your credentials
+nano ~/.vio_super_ai/email_config.json
+```
+
 Or if you installed with symlink:
 
 ```bash
-vio-monitor
+vio-monitor        # MINIMALIST version
+vio-monitor-elite  # ELITE version
+vio-dashboard      # Web dashboard
 ```
+
+**For complete iPhone setup:** See [IPHONE_GUIDE.md](IPHONE_GUIDE.md)
 
 #### Configuration
 
