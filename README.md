@@ -4,6 +4,17 @@
 
 Professional-grade system monitoring and auto-optimization tool for macOS with machine learning capabilities.
 
+**© 2025 VIO Super AI - Proprietary Software - All Rights Reserved**
+
+### 🎨 Two Versions Available
+
+This repository includes **TWO complete versions** to choose from:
+
+1. **MINIMALIST Edition** (`mac_system_monitor.py`) - Clean, simple design
+2. **ELITE Edition** (`mac_system_monitor_elite.py`) - Enhanced graphics with emoji indicators
+
+See [VERSION_COMPARISON.md](VERSION_COMPARISON.md) and [SIDE_BY_SIDE_COMPARISON.md](SIDE_BY_SIDE_COMPARISON.md) for detailed comparisons.
+
 ### 🌟 Features
 
 - **Real-time System Monitoring**
@@ -68,10 +79,16 @@ python3 mac_system_monitor.py
 
 ### 💻 Usage
 
-#### Basic Usage
+#### MINIMALIST Edition (Clean Design)
 
 ```bash
 python3 mac_system_monitor.py
+```
+
+#### ELITE Edition (Enhanced Graphics)
+
+```bash
+python3 mac_system_monitor_elite.py
 ```
 
 Or if you installed with symlink:
@@ -186,11 +203,22 @@ risk_score = (
 
 ### 🎨 Visual Design
 
-Clean, minimalist design with:
-- Box-drawing characters (`┌─└│├╔═╗║╚╝`)
+**MINIMALIST Edition:**
+- Clean, simple box-drawing characters (`┌─└│├`)
 - Unicode progress bars (`█` filled, `░` empty)
 - Subtle color coding for status indicators
-- Professional layout matching macOS aesthetic
+- Professional minimalist layout
+
+**ELITE Edition:**
+- Enhanced box-drawing (`╔═╗║╚╝╟─╢`)
+- Full VIO SUPER AI ASCII art header
+- Emoji indicators (🟢🟡🔴🏆⚡🤖💾)
+- Color-graded progress bars
+- Multi-panel dashboard layout
+
+See visual examples:
+- [VISUAL_OUTPUT.txt](VISUAL_OUTPUT.txt) - Minimalist design
+- [VISUAL_OUTPUT_ELITE.txt](VISUAL_OUTPUT_ELITE.txt) - ELITE design
 
 ### 🔧 Troubleshooting
 
@@ -206,13 +234,33 @@ Clean, minimalist design with:
 **Issue**: Monitor not auto-starting
 - **Solution**: Verify the path in your `.zshrc`/`.bashrc` is correct and the file is sourced on shell startup
 
-### 📄 License
+### 📄 License & Ownership
 
-This project is part of the VIO Super AI initiative - Professional Guinness World Records standards.
+**PROPRIETARY SOFTWARE - ALL RIGHTS RESERVED**
+
+This software is the exclusive property of **VIO Super AI**.
+
+- ✅ **Private Use Only** - For owner's exclusive use
+- ❌ **No Redistribution** - Cannot be shared, copied, or distributed
+- ❌ **No Modification** - Cannot be modified by third parties
+- 💰 **Commercial Licensing Available** - Contact VIO Super AI for licensing
+
+**Copyright © 2025 VIO Super AI - All Rights Reserved**
+
+See [LICENSE](LICENSE) for full legal terms.
+
+### ⚖️ Important Notice
+
+This code is **NOT open source**. If you wish to use this software, you must:
+1. Contact VIO Super AI for permission
+2. Negotiate and pay for a commercial license
+3. Receive written authorization
+
+Unauthorized use is prohibited and will result in legal action.
 
 ### 🤝 Contributing
 
-Contributions welcome! Please ensure code maintains the professional quality standards of the VIO Super AI project.
+This is proprietary software. Contributions are not accepted from external parties.
 
 ### 📞 Support
 
