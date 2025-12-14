@@ -36,7 +36,7 @@ COLORS = {
 CONFIG = {
     'RAM_THRESHOLD': 85,  # Percentage
     'CPU_THRESHOLD': 90,  # Percentage
-    'CHECK_INTERVAL': 5,   # Seconds
+    'CHECK_INTERVAL': 2,   # Seconds
     'HISTORY_SIZE': 100,   # Number of samples to keep
     'ML_ENABLED': True,
     'NOTIFICATIONS_ENABLED': True,
@@ -83,33 +83,63 @@ class MacSystemMonitor:
     
     def print_header(self):
         """Print professional VIO Super AI header"""
+        # Get system info for header
+        ram_total_gb = psutil.virtual_memory().total / (1024**3)
+        
         header = f"""
-{COLORS['BOLD']}{COLORS['HEADER']}{'=' * 80}
-{COLORS['OKCYAN']}    ██╗   ██╗██╗ ██████╗     ███████╗██╗   ██╗██████╗ ███████╗██████╗ 
-{COLORS['OKCYAN']}    ██║   ██║██║██╔═══██╗    ██╔════╝██║   ██║██╔══██╗██╔════╝██╔══██╗
-{COLORS['OKCYAN']}    ██║   ██║██║██║   ██║    ███████╗██║   ██║██████╔╝█████╗  ██████╔╝
-{COLORS['OKCYAN']}    ╚██╗ ██╔╝██║██║   ██║    ╚════██║██║   ██║██╔═══╝ ██╔══╝  ██╔══██╗
-{COLORS['OKCYAN']}     ╚████╔╝ ██║╚██████╔╝    ███████║╚██████╔╝██║     ███████╗██║  ██║
-{COLORS['OKCYAN']}      ╚═══╝  ╚═╝ ╚═════╝     ╚══════╝ ╚═════╝ ╚═╝     ╚══════╝╚═╝  ╚═╝
-{COLORS['HEADER']}                                                                                
-{COLORS['OKGREEN']}           AI System Monitor & Auto-Optimizer - World Record Quality
-{COLORS['OKBLUE']}                  Professional Guinness Standards Edition
-{COLORS['HEADER']}{'=' * 80}{COLORS['ENDC']}
+{COLORS['BOLD']}{COLORS['OKBLUE']}╔{'═' * 74}╗
+{COLORS['OKBLUE']}║{COLORS['ENDC']}           SYSTEM MONITOR - MAC AIR 2020 ({int(ram_total_gb)}GB RAM){' ' * 25}{COLORS['BOLD']}{COLORS['OKBLUE']}║
+{COLORS['OKBLUE']}╚{'═' * 74}╝{COLORS['ENDC']}
 """
         print(header)
     
     def get_system_stats(self):
         """Get current system statistics"""
+        vm = psutil.virtual_memory()
+        disk = psutil.disk_usage('/')
+        
+        # Get load averages (macOS specific)
+        try:
+            load_avg = os.getloadavg()
+        except:
+            load_avg = (0, 0, 0)
+        
+        # Get uptime
+        boot_time = datetime.fromtimestamp(psutil.boot_time())
+        uptime_delta = datetime.now() - boot_time
+        uptime_days = uptime_delta.days
+        uptime_hours = uptime_delta.seconds // 3600
+        uptime_minutes = (uptime_delta.seconds % 3600) // 60
+        
         stats = {
             'cpu_percent': psutil.cpu_percent(interval=1, percpu=False),
             'cpu_per_core': psutil.cpu_percent(interval=1, percpu=True),
-            'ram_percent': psutil.virtual_memory().percent,
-            'ram_used_gb': psutil.virtual_memory().used / (1024**3),
-            'ram_total_gb': psutil.virtual_memory().total / (1024**3),
+            'ram_percent': vm.percent,
+            'ram_used_gb': vm.used / (1024**3),
+            'ram_total_gb': vm.total / (1024**3),
+            'ram_cached_gb': getattr(vm, 'cached', 0) / (1024**3),
+            'ram_free_gb': vm.available / (1024**3),
             'swap_percent': psutil.swap_memory().percent,
-            'disk_percent': psutil.disk_usage('/').percent,
+            'disk_percent': disk.percent,
+            'disk_used_gb': disk.used / (1024**3),
+            'disk_total_gb': disk.total / (1024**3),
+            'load_avg_1': load_avg[0],
+            'load_avg_5': load_avg[1],
+            'load_avg_15': load_avg[2],
+            'process_count': len(psutil.pids()),
+            'uptime_days': uptime_days,
+            'uptime_hours': uptime_hours,
+            'uptime_minutes': uptime_minutes,
             'timestamp': datetime.now().isoformat(),
         }
+        
+        # Determine memory pressure
+        if stats['ram_percent'] > 85:
+            stats['memory_pressure'] = 'High'
+        elif stats['ram_percent'] > 60:
+            stats['memory_pressure'] = 'Moderate'
+        else:
+            stats['memory_pressure'] = 'Low'
         
         # Store in history for ML
         for key, value in stats.items():
@@ -265,93 +295,53 @@ class MacSystemMonitor:
             print(f"{COLORS['FAIL']}PEC Notification Error: {e}{COLORS['ENDC']}")
     
     def print_stats_display(self, stats, processes):
-        """Print beautiful statistics display"""
-        # System Stats Box
-        print(f"\n{COLORS['BOLD']}{COLORS['OKBLUE']}╔{'═' * 78}╗{COLORS['ENDC']}")
-        print(f"{COLORS['BOLD']}{COLORS['OKBLUE']}║{COLORS['OKCYAN']} SYSTEM STATISTICS{' ' * 60}║{COLORS['ENDC']}")
-        print(f"{COLORS['BOLD']}{COLORS['OKBLUE']}╠{'═' * 78}╣{COLORS['ENDC']}")
+        """Print beautiful statistics display matching user's design"""
         
-        # CPU Display
-        cpu_color = (COLORS['FAIL'] if stats['cpu_percent'] > CONFIG['CPU_THRESHOLD'] 
-                    else COLORS['WARNING'] if stats['cpu_percent'] > 70 
-                    else COLORS['OKGREEN'])
+        # CPU Section
+        print(f"\n┌─ CPU Usage")
         cpu_bar = self.create_progress_bar(stats['cpu_percent'], 50)
-        print(f"{COLORS['OKBLUE']}║{COLORS['ENDC']} {COLORS['BOLD']}CPU Usage:{COLORS['ENDC']}    {cpu_color}{stats['cpu_percent']:5.1f}%{COLORS['ENDC']} {cpu_bar} {COLORS['OKBLUE']}║{COLORS['ENDC']}")
+        print(f"│ {cpu_bar}  {int(stats['cpu_percent'])}%")
+        print(f"└─ Load (1/5/15 min): {stats['load_avg_1']:.2f} {stats['load_avg_5']:.2f} {stats['load_avg_15']:.3f}")
         
-        # RAM Display
-        ram_color = (COLORS['FAIL'] if stats['ram_percent'] > CONFIG['RAM_THRESHOLD'] 
-                    else COLORS['WARNING'] if stats['ram_percent'] > 70 
-                    else COLORS['OKGREEN'])
+        # RAM Section
+        print(f"\n┌─ RAM Usage ({int(stats['ram_total_gb'])}GB Total)")
         ram_bar = self.create_progress_bar(stats['ram_percent'], 50)
-        print(f"{COLORS['OKBLUE']}║{COLORS['ENDC']} {COLORS['BOLD']}RAM Usage:{COLORS['ENDC']}    {ram_color}{stats['ram_percent']:5.1f}%{COLORS['ENDC']} {ram_bar} {COLORS['OKBLUE']}║{COLORS['ENDC']}")
-        print(f"{COLORS['OKBLUE']}║{COLORS['ENDC']}   Used: {stats['ram_used_gb']:.2f} GB / Total: {stats['ram_total_gb']:.2f} GB{' ' * 25}{COLORS['OKBLUE']}║{COLORS['ENDC']}")
+        print(f"│ {ram_bar}  {int(stats['ram_percent'])}%")
+        print(f"├─ Used: {stats['ram_used_gb']:.1f}G | Cached: {stats['ram_cached_gb']:.1f}G | Free: {stats['ram_free_gb']:.1f}G")
+        print(f"└─ Memory Pressure: {stats['memory_pressure']}")
         
-        # Swap Display
-        swap_color = (COLORS['FAIL'] if stats['swap_percent'] > 80 
-                     else COLORS['WARNING'] if stats['swap_percent'] > 50 
-                     else COLORS['OKGREEN'])
-        swap_bar = self.create_progress_bar(stats['swap_percent'], 50)
-        print(f"{COLORS['OKBLUE']}║{COLORS['ENDC']} {COLORS['BOLD']}SWAP Usage:{COLORS['ENDC']}   {swap_color}{stats['swap_percent']:5.1f}%{COLORS['ENDC']} {swap_bar} {COLORS['OKBLUE']}║{COLORS['ENDC']}")
-        
-        # Disk Display
-        disk_color = (COLORS['FAIL'] if stats['disk_percent'] > 90 
-                     else COLORS['WARNING'] if stats['disk_percent'] > 80 
-                     else COLORS['OKGREEN'])
+        # Disk Section
+        print(f"\n┌─ Disk Usage")
         disk_bar = self.create_progress_bar(stats['disk_percent'], 50)
-        print(f"{COLORS['OKBLUE']}║{COLORS['ENDC']} {COLORS['BOLD']}Disk Usage:{COLORS['ENDC']}   {disk_color}{stats['disk_percent']:5.1f}%{COLORS['ENDC']} {disk_bar} {COLORS['OKBLUE']}║{COLORS['ENDC']}")
+        print(f"│ {disk_bar}  {int(stats['disk_percent'])}%")
+        print(f"└─ Space: {int(stats['disk_used_gb'])}Gi / {int(stats['disk_total_gb'])}Gi")
         
-        print(f"{COLORS['BOLD']}{COLORS['OKBLUE']}╚{'═' * 78}╝{COLORS['ENDC']}")
+        # Top Memory Consumers
+        print(f"\n┌─ Top Memory Consumers")
+        for i, proc in enumerate(processes[:3]):
+            if i == len(processes[:3]) - 1:
+                print(f"│ {proc['name']:<40} {proc['memory_percent']:>5.1f}%")
+                print(f"└─")
+            else:
+                print(f"│ {proc['name']:<40} {proc['memory_percent']:>5.1f}%")
         
-        # Top Processes Box
-        print(f"\n{COLORS['BOLD']}{COLORS['OKBLUE']}╔{'═' * 78}╗{COLORS['ENDC']}")
-        print(f"{COLORS['BOLD']}{COLORS['OKBLUE']}║{COLORS['OKCYAN']} TOP RESOURCE-CONSUMING PROCESSES{' ' * 44}║{COLORS['ENDC']}")
-        print(f"{COLORS['BOLD']}{COLORS['OKBLUE']}╠{'═' * 78}╣{COLORS['ENDC']}")
-        print(f"{COLORS['OKBLUE']}║{COLORS['BOLD']} {'PID':<8} {'PROCESS NAME':<30} {'CPU%':<8} {'MEM%':<8} {'RISK':<8}║{COLORS['ENDC']}")
-        print(f"{COLORS['BOLD']}{COLORS['OKBLUE']}╠{'═' * 78}╣{COLORS['ENDC']}")
-        
-        for proc in processes[:10]:
-            risk_score = self.process_scores.get(proc['name'], 0)
-            risk_color = (COLORS['FAIL'] if risk_score > 20 
-                         else COLORS['WARNING'] if risk_score > 10 
-                         else COLORS['OKGREEN'])
-            
-            proc_name = proc['name'][:28] + '..' if len(proc['name']) > 30 else proc['name']
-            print(f"{COLORS['OKBLUE']}║{COLORS['ENDC']} {proc['pid']:<8} {proc_name:<30} "
-                  f"{proc['cpu_percent']:>6.1f}%  {proc['memory_percent']:>6.1f}%  "
-                  f"{risk_color}{risk_score:>6.1f}{COLORS['ENDC']}  {COLORS['OKBLUE']}║{COLORS['ENDC']}")
-        
-        print(f"{COLORS['BOLD']}{COLORS['OKBLUE']}╚{'═' * 78}╝{COLORS['ENDC']}")
-        
-        # Status Info
+        # System Info
+        uptime_str = f"{stats['uptime_days']}d {stats['uptime_hours']}h {stats['uptime_minutes']}m"
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        auto_kill_status = f"{COLORS['OKGREEN']}ENABLED{COLORS['ENDC']}" if CONFIG['AUTO_KILL_ENABLED'] else f"{COLORS['WARNING']}DISABLED{COLORS['ENDC']}"
-        ml_status = f"{COLORS['OKGREEN']}ACTIVE{COLORS['ENDC']}" if CONFIG['ML_ENABLED'] else f"{COLORS['WARNING']}INACTIVE{COLORS['ENDC']}"
         
-        print(f"\n{COLORS['OKCYAN']}Status:{COLORS['ENDC']} Auto-Kill: {auto_kill_status} | ML Prediction: {ml_status} | "
-              f"Processes Killed: {COLORS['BOLD']}{len(self.killed_processes)}{COLORS['ENDC']}")
-        print(f"{COLORS['OKCYAN']}Time:{COLORS['ENDC']} {timestamp} | "
-              f"{COLORS['OKCYAN']}Next check in:{COLORS['ENDC']} {CONFIG['CHECK_INTERVAL']} seconds")
+        print(f"\n┌─ System Info")
+        print(f"│ Uptime: {uptime_str}  │  Processes: {stats['process_count']}")
+        print(f"│ Date: {timestamp}")
+        print(f"└─ Press Ctrl+C to exit  │  Update: every {CONFIG['CHECK_INTERVAL']} seconds")
         
-        if self.killed_processes:
-            last_killed = self.killed_processes[-1]
-            print(f"{COLORS['WARNING']}Last killed:{COLORS['ENDC']} {last_killed['name']} "
-                  f"(PID: {last_killed['pid']}, CPU: {last_killed['cpu']:.1f}%, MEM: {last_killed['mem']:.1f}%)")
-        
-        print(f"\n{COLORS['OKCYAN']}Press Ctrl+C to exit{COLORS['ENDC']}")
+        # Bottom separator
+        print(f"\n{'━' * 76}")
     
     def create_progress_bar(self, percent, width=50):
-        """Create visual progress bar"""
+        """Create visual progress bar matching user's design"""
         filled = int(width * percent / 100)
         bar = '█' * filled + '░' * (width - filled)
-        
-        if percent > 90:
-            color = COLORS['FAIL']
-        elif percent > 70:
-            color = COLORS['WARNING']
-        else:
-            color = COLORS['OKGREEN']
-        
-        return f"{color}{bar}{COLORS['ENDC']}"
+        return bar
     
     def auto_optimize(self, stats, processes):
         """Auto-optimization engine to prevent system freezes"""
