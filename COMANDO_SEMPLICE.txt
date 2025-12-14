@@ -1,0 +1,56 @@
+═══════════════════════════════════════════════════════════════════════════
+  VIO Super AI - COMANDO SEMPLICISSIMO
+═══════════════════════════════════════════════════════════════════════════
+
+COPIA E INCOLLA QUESTO nel Terminal Mac, premi INVIO:
+
+cd ~/Desktop && rm -rf ai-scripts-elite && git clone -b copilot/create-mac-system-monitor https://github.com/vio83/ai-scripts-elite.git && cd ai-scripts-elite && pip3 install --user psutil Flask && mkdir -p ~/.vio_super_ai && chmod +x *.py && nohup python3 web_dashboard.py > ~/.vio_super_ai/dashboard.log 2>&1 & sleep 3 && echo "" && echo "════════════════════════════════════════════════════════════" && echo "  ✅ PRONTO!" && echo "════════════════════════════════════════════════════════════" && echo "" && echo "📱 SU IPHONE - APRI SAFARI E VAI A:" && echo "" && echo "   http://$(ipconfig getifaddr en0 || ipconfig getifaddr en1 || echo "192.168.1.X"):5000" && echo "" && echo "════════════════════════════════════════════════════════════" && echo "" && sleep 2 && python3 mac_system_monitor_elite.py
+
+
+═══════════════════════════════════════════════════════════════════════════
+  ALTERNATIVE - Se non vedi l'IP:
+═══════════════════════════════════════════════════════════════════════════
+
+1) Dopo aver eseguito il comando sopra, apri un NUOVO Terminal e digita:
+
+   ipconfig getifaddr en0
+
+   Oppure:
+
+   ipconfig getifaddr en1
+
+   L'IP che vedi (tipo 192.168.1.100) è quello da usare su iPhone!
+
+2) Su iPhone Safari vai a:  http://[QUELL_IP]:5000
+
+
+═══════════════════════════════════════════════════════════════════════════
+  ANCORA PIÙ SEMPLICE - Versione step-by-step:
+═══════════════════════════════════════════════════════════════════════════
+
+STEP 1 - Copia e incolla nel Terminal:
+
+cd ~/Desktop && rm -rf ai-scripts-elite && git clone -b copilot/create-mac-system-monitor https://github.com/vio83/ai-scripts-elite.git && cd ai-scripts-elite
+
+
+STEP 2 - Copia e incolla nel Terminal:
+
+pip3 install --user psutil Flask && python3 web_dashboard.py &
+
+
+STEP 3 - Copia e incolla nel Terminal:
+
+ipconfig getifaddr en0
+
+
+STEP 4 - Prendi l'IP che appare (es: 192.168.1.100)
+
+
+STEP 5 - Su iPhone Safari vai a:
+
+http://192.168.1.100:5000
+
+(usa il TUO IP!)
+
+
+═══════════════════════════════════════════════════════════════════════════
