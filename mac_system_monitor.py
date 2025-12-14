@@ -63,7 +63,8 @@ class MacSystemMonitor:
             try:
                 with open(model_path, 'rb') as f:
                     self.ml_model = pickle.load(f)
-            except:
+            except (OSError, pickle.PickleError, EOFError) as e:
+                print(f"{COLORS['WARNING']}Warning: Could not load ML model: {e}{COLORS['ENDC']}")
                 self.ml_model = {}
         else:
             self.ml_model = {}
@@ -101,7 +102,7 @@ class MacSystemMonitor:
         # Get load averages (macOS specific)
         try:
             load_avg = os.getloadavg()
-        except:
+        except (OSError, AttributeError):
             load_avg = (0, 0, 0)
         
         # Get uptime
@@ -273,7 +274,7 @@ class MacSystemMonitor:
                 display notification "{message}" with title "{title}" sound name "Ping"
             '''
             subprocess.run(['osascript', '-e', script], check=False, capture_output=True)
-        except:
+        except (OSError, subprocess.SubprocessError):
             pass
     
     def send_pec_notification(self, message):
