@@ -1,0 +1,13 @@
+# VIO Super AI - Python Dependencies
+# Required for Mac System Monitor with iPhone & Email support
+
+# Core monitoring
+psutil>=5.9.0
+
+# Web dashboard for iPhone access
+Flask>=2.3.0
+
+# Email notifications (included in Python standard library, but listed for clarity)
+# smtplib - standard library
+# email - standard library
+# ssl - standard library
