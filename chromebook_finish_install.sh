@@ -5,7 +5,7 @@ echo "[=== CHROMEBOOK FINISH INSTALL ===]"
 echo "UTC: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
 
 export DEBIAN_FRONTEND=noninteractive
-export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/.local/bin:/usr/sbin:$PATH"
 
 OUT_BASE="$HOME/chromebook_finish_$(date +%Y%m%d_%H%M%S)"
 mkdir -p "$OUT_BASE"
@@ -41,6 +41,11 @@ for cmd in nmap tcpdump tshark sqlmap hydra john hashcat ots; do
   fi
 done
 
+# In Debian Bookworm il binario john può essere in /usr/sbin, spesso fuori PATH utente.
+if [ -x /usr/sbin/john ] && ! command -v john >/dev/null 2>&1; then
+  ln -sf /usr/sbin/john "$HOME/.local/bin/john" || true
+fi
+
 echo "[STEP] Cerco l'ultimo hash_of_hashes.txt gia generato"
 LATEST_HOH="$(find "$HOME" -maxdepth 2 -type f -name 'hash_of_hashes.txt' | sort | tail -n 1)"
 if [ -z "$LATEST_HOH" ]; then
@@ -50,12 +55,17 @@ fi
 
 echo "[INFO] Uso: $LATEST_HOH"
 
-echo "[STEP] Creo timestamp OTS"
-ots stamp "$LATEST_HOH"
-
 OTS_FILE="$LATEST_HOH.ots"
-OTS_STAMP="ok"
+OTS_STAMP="skipped_existing"
 OTS_VERIFY="pending"
+
+if [ -f "$OTS_FILE" ]; then
+  echo "[STEP] Timestamp OTS già presente, salto stamp"
+else
+  echo "[STEP] Creo timestamp OTS"
+  ots stamp "$LATEST_HOH"
+  OTS_STAMP="ok"
+fi
 
 if [ -f "$OTS_FILE" ]; then
   echo "[STEP] Upgrade OTS"
