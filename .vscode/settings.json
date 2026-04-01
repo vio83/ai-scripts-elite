@@ -44,5 +44,6 @@
   "python.analysis.diagnosticMode": "openFilesOnly",
   "extensions.autoUpdate": true,
   "extensions.autoCheckUpdates": true,
-  "update.mode": "start"
+  "update.mode": "start",
+  "editor.codeActions.triggerOnFocusChange": true
 }
