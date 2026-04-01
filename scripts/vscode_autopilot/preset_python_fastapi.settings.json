@@ -1,0 +1,12 @@
+{
+  "python.analysis.diagnosticMode": "openFilesOnly",
+  "python.analysis.typeCheckingMode": "basic",
+  "python.analysis.autoImportCompletions": false,
+  "python.analysis.inlayHints.variableTypes": false,
+  "python.analysis.inlayHints.functionReturnTypes": false,
+  "python.analysis.indexing": true,
+  "[python]": {
+    "editor.formatOnSave": true,
+    "editor.tabSize": 4
+  }
+}

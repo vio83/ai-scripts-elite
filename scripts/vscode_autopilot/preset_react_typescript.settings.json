@@ -1,0 +1,13 @@
+{
+  "typescript.tsserver.maxTsServerMemory": 3072,
+  "typescript.disableAutomaticTypeAcquisition": true,
+  "js/ts.tsserver.useSyntaxServer": "auto",
+  "js/ts.suggest.autoImports": true,
+  "eslint.run": "onSave",
+  "[typescript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  }
+}
