@@ -24,8 +24,13 @@ sudo -E apt-get -y install \
   nmap tcpdump tshark sqlmap hydra john hashcat || true
 
 echo "[STEP] Installo OpenTimestamps da PyPI"
-python3 -m pip install --user --upgrade pip setuptools wheel
-python3 -m pip install --user opentimestamps-client
+if ! python3 -m pip install --user --upgrade pip setuptools wheel --break-system-packages; then
+  python3 -m pip install --user --upgrade pip setuptools wheel || true
+fi
+
+if ! python3 -m pip install --user opentimestamps-client --break-system-packages; then
+  python3 -m pip install --user opentimestamps-client || true
+fi
 
 echo "[STEP] Verifica binari"
 for cmd in nmap tcpdump tshark sqlmap hydra john hashcat ots; do
