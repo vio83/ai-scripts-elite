@@ -323,10 +323,8 @@ else
     log "  ${YELLOW}   Per riparazione completa: riavvia in Recovery (Cmd+R) → Disk Utility${NC}"
 fi
 
-# Riparazione permessi (disponibile su 10.13)
-log "  Riparazione permessi disco..."
-sudo diskutil repairPermissions / 2>&1 | tail -5 | tee -a "$LOG_FILE" || \
-    log "  ${YELLOW}⚠${NC} repairPermissions non disponibile su questa versione"
+# In diverse build High Sierra, diskutil non espone repairPermissions
+log "  ${YELLOW}ℹ Riparazione permessi saltata: comando non disponibile in questa build${NC}"
 
 # S.M.A.R.T. check
 log ""
@@ -401,13 +399,16 @@ defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true 2>/dev/
 log "  Cancellazione snapshot Time Machine locali..."
 sudo tmutil disablelocal 2>/dev/null || true
 
-# Rimuovi tutti gli snapshot
-SNAPSHOT_COUNT=$(sudo tmutil listlocalsnapshots / 2>/dev/null | grep -c "com.apple.TimeMachine" || echo "0")
-if [ "$SNAPSHOT_COUNT" -gt 0 ]; then
-    sudo tmutil listlocalsnapshots / 2>/dev/null | while read snapshot; do
-        sudo tmutil deletelocalsnapshots "$snapshot" 2>/dev/null || true
-    done
-    log "  ${GREEN}✔${NC} Rimossi $SNAPSHOT_COUNT snapshot locali Time Machine"
+# Rimuovi tutti gli snapshot (robusto anche quando non ce ne sono)
+SNAPSHOT_LIST="$(sudo tmutil listlocalsnapshots / 2>/dev/null || true)"
+SNAPSHOT_COUNT="$(printf "%s\n" "$SNAPSHOT_LIST" | grep -c "com.apple.TimeMachine" || true)"
+if [[ "$SNAPSHOT_COUNT" =~ ^[0-9]+$ ]] && [ "$SNAPSHOT_COUNT" -gt 0 ]; then
+    while IFS= read -r snapshot; do
+        [ -z "$snapshot" ] && continue
+        snap_date="${snapshot##*.}"
+        sudo tmutil deletelocalsnapshots "$snap_date" 2>/dev/null || true
+    done <<< "$(printf "%s\n" "$SNAPSHOT_LIST" | grep "com.apple.TimeMachine" || true)"
+    log "  ${GREEN}✔${NC} Snapshot locali processati: $SNAPSHOT_COUNT"
 else
     log "  ⏭ Nessuno snapshot locale trovato"
 fi
@@ -530,9 +531,18 @@ log ""
 
 log_section "FASE 12 — PULIZIA .DS_Store"
 
-DS_COUNT=$(sudo find / -name ".DS_Store" -maxdepth 5 2>/dev/null | wc -l | tr -d ' ')
-sudo find / -name ".DS_Store" -maxdepth 5 -delete 2>/dev/null
-log "  ${GREEN}✔${NC} Rimossi $DS_COUNT file .DS_Store"
+# Evita scansione globale di / (molto lenta e soggetta a blocchi)
+DS_PATHS=("$HOME" "/Library" "/Applications")
+DS_COUNT=0
+for p in "${DS_PATHS[@]}"; do
+    [ -d "$p" ] || continue
+    found="$(sudo find "$p" -maxdepth 5 -name ".DS_Store" 2>/dev/null | wc -l | tr -d ' ')"
+    if [[ "$found" =~ ^[0-9]+$ ]]; then
+        DS_COUNT=$((DS_COUNT + found))
+    fi
+    sudo find "$p" -maxdepth 5 -name ".DS_Store" -delete 2>/dev/null || true
+done
+log "  ${GREEN}✔${NC} Rimossi $DS_COUNT file .DS_Store (scope: HOME/Library/Applications)"
 
 log ""
 
