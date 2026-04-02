@@ -1,0 +1,42 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "🌍 World Monitor — Avvia",
+			"type": "shell",
+			"command": "python3",
+			"args": [
+				"${workspaceFolder}/world_monitor.py"
+			],
+			"isBackground": true,
+			"problemMatcher": [],
+			"presentation": {
+				"reveal": "always",
+				"panel": "dedicated",
+				"group": "monitoring"
+			}
+		},
+		{
+			"label": "🌍 World Monitor — Apri Browser",
+			"type": "shell",
+			"command": "open",
+			"args": [
+				"http://localhost:7777"
+			],
+			"problemMatcher": [],
+			"presentation": {
+				"reveal": "never"
+			}
+		},
+		{
+			"label": "🌍 VIO World Monitor",
+			"type": "shell",
+			"command": "python3",
+			"args": [
+				"/Users/padronavio/ai-scripts-elite/world_monitor.py"
+			],
+			"isBackground": true,
+			"problemMatcher": []
+		}
+	]
+}

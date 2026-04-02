@@ -93,8 +93,8 @@ for key in keys_to_freeze:
     if key in settings:
         baseline[key] = settings[key]
 
-if "github.copilot.chat.defaultModel" not in baseline:
-    baseline["github.copilot.chat.defaultModel"] = "gpt-5.3-codex"
+# Non inserire fallback hardcodati per chiavi assenti: la baseline deve rispecchiare
+# solo le impostazioni realmente presenti al momento dell'installazione.
 
 if "ollamaAgent.mode" not in baseline:
     baseline["ollamaAgent.mode"] = "agent"
@@ -154,8 +154,10 @@ if [[ "$RUN_NOW" -eq 1 ]]; then
 fi
 
 if [[ "$HARD_LOCK" -eq 1 ]]; then
-  chflags nouchg "$SETTINGS_PATH" "$SOURCE_AGENT_PATH" "$BASELINE_SETTINGS" "$BASELINE_AGENT" >/dev/null 2>&1 || true
-  chflags uchg "$SETTINGS_PATH" "$SOURCE_AGENT_PATH" "$BASELINE_SETTINGS" "$BASELINE_AGENT"
+  # Hard-lock SOLO sui file baseline — mai sui file live che VS Code deve poter scrivere.
+  # settings.json e ollama.agent.md live rimangono scrivibili da VS Code e dall'enforcer.
+  chflags nouchg "$BASELINE_SETTINGS" "$BASELINE_AGENT" >/dev/null 2>&1 || true
+  chflags uchg "$BASELINE_SETTINGS" "$BASELINE_AGENT"
 fi
 
 echo "Lock agente VS Code installato."
@@ -165,5 +167,5 @@ echo "LaunchAgent: $LAUNCH_AGENT_PATH"
 echo "Baseline settings: $BASELINE_SETTINGS"
 echo "Baseline agente: $BASELINE_AGENT"
 if [[ "$HARD_LOCK" -eq 1 ]]; then
-  echo "Hard-lock attivo (chflags uchg)."
+  echo "Hard-lock attivo sui baseline (chflags uchg su settings.lock.json e ollama.agent.md baseline)."
 fi
